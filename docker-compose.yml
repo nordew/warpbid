@@ -1,0 +1,43 @@
+version: "3.8"
+
+services:
+  cockroach:
+    image: cockroachdb/cockroach:latest
+    command: start-single-node --insecure --advertise-addr=${COCKROACH_HOST}
+    environment:
+      - COCKROACH_DATABASE=${COCKROACH_DATABASE}
+      - COCKROACH_USER=${COCKROACH_USER}
+      - COCKROACH_PASSWORD=${COCKROACH_PASSWORD}
+      - COCKROACH_SSLMODE=${COCKROACH_SSLMODE}
+    ports:
+      - "${COCKROACH_PORT}:26257"
+      - "8080:8080"
+    volumes:
+      - cockroach-data:/cockroach/cockroach-data
+
+  dragonfly:
+    image: docker.dragonflydb.io/dragonflydb/dragonfly:latest
+    command: ["dfserver", "--requirepass", "${DRAGONFLY_PASSWORD}"]
+    ports:
+      - "${DRAGONFLY_PORT}:6379"
+
+  scylla:
+    image: scylladb/scylla:latest
+    command:
+      ["scylla", "--smp", "1", "--memory", "512M", "--overprovisioned", "1"]
+    ports:
+      - "${SCYLLA_PORT}:9042"
+    volumes:
+      - scylla-data:/var/lib/scylla
+
+  nats:
+    image: nats:latest
+    ports:
+      - "4222:4222"
+      - "8222:8222"
+    environment:
+      - NATS_URL=${NATS_URL}
+
+volumes:
+  cockroach-data:
+  scylla-data:
