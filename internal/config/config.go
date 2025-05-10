@@ -1,10 +1,19 @@
 package config
 
+import "time"
+
 type Config struct {
+	JWT       JWT             `env-prefix:"JWT_`
 	Cockroach CockroachConfig `env-prefix:"COCKROACH_"`
 	Dragonfly DragonflyConfig `env-prefix:"DRAGONFLY_"`
 	Scylla    ScyllaConfig    `env-prefix:"SCYLLA_"`
 	NATS      NATSConfig      `env-prefix:"NATS_"`
+}
+
+type JWT struct {
+	Secret          string        `env:"SECRET,required"`
+	AccessTokenTTL  time.Duration `env:"ACCESS_TOKEN_TTL" env-default:"15m"`
+	RefreshTokenTTL time.Duration `env:REFRESH_TOKEN_TTL" env-default:"30d"`
 }
 
 type CockroachConfig struct {
