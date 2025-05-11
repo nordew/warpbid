@@ -2,12 +2,10 @@ package service
 
 import (
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/nordew/warpbid/internal/infrastructure/storage"
 	"github.com/nordew/warpbid/internal/models"
+	"github.com/nordew/warpbid/pkg/auth"
 )
-
-type Storage interface {
-	// ...
-}
 
 type AuthJWT interface {
 	GenerateAccessToken(user *models.User) (string, error)
@@ -17,11 +15,13 @@ type AuthJWT interface {
 }
 
 type Service struct {
-	storage Storage
+	storage    storage.Storage
+	jwtManager auth.JWTManager
 }
 
-func New(storage Storage) *Service {
+func New(storage storage.Storage, jwtManager auth.JWTManager) *Service {
 	return &Service{
-		storage: storage,
+		storage:    storage,
+		jwtManager: jwtManager,
 	}
 }
