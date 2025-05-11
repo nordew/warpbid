@@ -2,9 +2,9 @@ package storage
 
 import (
 	"context"
-	"time"
 
 	"github.com/nordew/go-errx"
+	"github.com/nordew/warpbid/internal/models"
 )
 
 const (
@@ -12,8 +12,8 @@ const (
 	ErrFailedToGetNonce  = "failed to get nonce"
 )
 
-func (s *Storage) SaveNonce(ctx context.Context, walletAddress, nonce string, expire time.Duration) error {
-	err := s.dragonfly.Set(ctx, walletAddress, nonce, expire).Err()
+func (s *Storage) SaveNonce(ctx context.Context, authChallenge models.AuthChallenge) error {
+	err := s.dragonfly.Set(ctx, authChallenge.WalletAddress, authChallenge.Nonce, authChallenge.ExpiresAt).Err()
 	if err != nil {
 		return errx.NewInternal().WithDescriptionAndCause(ErrFailedToSaveNonce, err)
 	}

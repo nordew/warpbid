@@ -11,6 +11,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/nordew/go-errx"
 	"github.com/nordew/warpbid/internal/dto"
+	"github.com/nordew/warpbid/internal/models"
 )
 
 const (
@@ -26,7 +27,9 @@ func (s *Service) GetNonce(ctx context.Context, walletAddress string) (string, e
 	nonce := uuid.NewString()
 	expiration := 15 * time.Minute
 
-	if err := s.storage.SaveNonce(ctx, walletAddress, nonce, expiration); err != nil {
+	authChallenge := models.NewAuthChallenge(walletAddress, nonce, expiration)
+
+	if err := s.storage.SaveNonce(ctx, authChallenge); err != nil {
 		return "", err
 	}
 
