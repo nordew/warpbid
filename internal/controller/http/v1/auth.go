@@ -35,36 +35,3 @@ func (h *Handler) verify(c *fiber.Ctx) error {
 		"refreshToken": refreshToken,
 	})
 }
-
-// // internal/controller/http/v1/auth.go
-// func (h *AuthHandler) GetNonce(c *gin.Context) {
-// 	addr := c.Query("walletAddress")
-
-// 	// 1. validate eth address...
-// 	nonce := uuid.New().String()
-// 	expire := time.Now().Add(5 * time.Minute)
-
-// 	h.challenges.Save(addr, nonce, expire)
-
-// 	c.JSON(200, gin.H{"nonce": fmt.Sprintf("Sign this message: %s", nonce)})
-// }
-
-// func (h *AuthHandler) Verify(c *gin.Context) {
-// 	var req dto.VerifyRequest
-// 	if err := c.ShouldBindJSON(&req); err != nil { /* 400 */
-// 	}
-
-// 	ch, ok := h.challenges.Load(req.WalletAddress)
-
-// 	if !ok || ch.ExpiresAt.Before(time.Now()) { /* 400 challenge */
-// 	}
-
-// 	recoveredAddr, err := crypto.VerifySignature(ch.Nonce, req.Signature)
-// 	if err != nil || !strings.EqualFold(recoveredAddr, req.WalletAddress) {
-// 		/* 401 invalid signature */
-// 	}
-
-// 	token, refresh := h.tokenSvc.GenerateTokens(req.WalletAddress)
-
-// 	c.JSON(200, dto.VerifyResponse{AccessToken: token, RefreshToken: refresh})
-// }
